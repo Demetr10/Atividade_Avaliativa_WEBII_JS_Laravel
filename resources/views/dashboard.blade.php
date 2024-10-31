@@ -18,7 +18,7 @@
                                         <i class="absolute fa fa-search text-gray-400 top-5 left-4"></i>
                                         <input type="text"
                                             class="bg-white h-14 w-full px-12 rounded-lg focus:outline-none hover:cursor-pointer"
-                                            name="textInput">
+                                            name="textInput" id="searchInput" placeholder="Buscar usuário">
                                         <span class="absolute top-4 right-5 border-l pl-4"><i
                                                 class="fa fa-microphone text-gray-500 hover:text-green-500 hover:cursor-pointer"></i></span>
                                     </div>
@@ -28,15 +28,14 @@
                     </form>
 
                     @if(session('usuarios') && count(session('usuarios')) > 0)
-                    <div  class="mt-5">
-                        <h2>Usuários encontrados:</h2>
-                    <ul>
-                        @foreach(session('usuarios') as $usuario)
-                            <li>{{ $usuario->name }}</li>
-                        @endforeach
-                    </ul>
-                    </div>
-
+                        <div class="mt-5" id="userListContainer">
+                            <h2>Usuários encontrados:</h2>
+                            <ul id="userList">
+                                @foreach(session('usuarios') as $usuario)
+                                    <li>{{ $usuario->name }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                     @elseif(session('usuarios') && count(session('usuarios')) == 0)
                         <h2>Nenhum usuário encontrado</h2>
                     @endif
@@ -44,4 +43,26 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchInput');//campo da busca 
+            const userList = document.querySelectorAll('#userList li');//lista do usuario 
+
+            searchInput.addEventListener('input', function () {//sempre que o usuario digita algo, essa função é executada em tempo real
+                
+                const filter = this.value.toLowerCase();
+
+                userList.forEach(user => {
+                    const userName = user.textContent.toLowerCase();
+                    if (userName.includes(filter)) {
+                        user.style.display = ""; // mostra o usuario correpondente a busca
+                    } else {
+                        user.style.display = "none"; // esconde o usuario se não corresponde
+                    }
+                });
+            });
+        });
+    </script>
 </x-app-layout>
+//o usuatrio pega o 'input' onde digita o nome, pega todos os elementos da lista 
